@@ -1,0 +1,2 @@
+class Myseriese(object):
+    pass
