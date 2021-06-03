@@ -26,7 +26,7 @@ class Service(object):
         return this.train['Survived']
 
     @staticmethod
-    def drop_feature(this, *feature) -> object: # *feature → 입력값을 전부 모아서 튜플로 만들어준다 /**feature - 딕셔너리 생성
+    def drop_feature(this, *feature) -> object: # *(제너레이터) feature → 입력값을 전부 모아서 튜플로 만들어준다 /**feature - 딕셔너리 생성
         for i in feature:
             this.train = this.train.drop([i], axis=1)  # axis = 1  세로축 지워라/ 0 가로축을 지워라
             this.test = this.test.drop([i], axis=1)
@@ -55,7 +55,8 @@ class Service(object):
         print(f'9. >>>>>>>>>>>>>{this.test[this.test.isna().any(axis=1)]}') # 결측값이 무엇인지 보여주는 함수
         this.train['FareBand'] = pd.qcut(this.train['Fare'], 4)
         # quct 으로 bins 값 설정 {this.train["FareBand"].head(10)}
-        # bins = list(pd.qcut(this.train['Fare'], 4, retbins=True))
+        # bins = list(pd.qcut(this.train['Fare'], 4, retbins=True)) -> 이방법으로 할 시 구간으로 설정해 주고 0-3 0초과의 값을 설정해주므로
+        #0값은 넣을 곳이 없어서 결측값으로 나오게 된다 / 그래서 밑에서 bins를 -1로 넣어서 0값이 들 어갈 수 있는 구간을 준다 초기 데이터 트레인에서 요금을 설정안한 데이터가 있기 때문에 이런 결과가 나옴
         bins = [-1, 8, 15, 31, np.inf]
         this.train = this.train.drop(['FareBand'], axis=1)
         for these in this.train, this.test:
@@ -64,19 +65,13 @@ class Service(object):
         return this
 
 
-
-
-
-
-
-
     #요금을 구간별로 구분한다
     @staticmethod
     def fare_band_fill_na(this) -> object:
         return
 
     @staticmethod
-    def title_norminal(this) -> object:
+    def title_norminal(this) -> object: #신분 나누기
         combine = [this.train, this.test]
         for dataset in combine:
             dataset['Title'] = dataset.Name.str.extract('([A-Za-z]+)\.', expand=False)
@@ -120,7 +115,7 @@ class Service(object):
             dataset['AgeGroup'] = dataset['AgeGroup'].map(age_title_mapping)
 
         return this
-#사이킷런으로 문제를 풀게 만드는것
+#사이킷런으로 문제를 풀게 만드는것 # 하지만 이 방법을 사용 하지 않고 controller에서 사이킷런을 불러와서 사용할 예정
     @staticmethod
     def create_k_fold() -> object:
         return KFold(n_splits=10, shuffle=True, random_state=0)

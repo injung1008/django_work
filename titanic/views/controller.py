@@ -3,6 +3,7 @@ import pandas as pd
 from titanic.models.service import Service
 from titanic.models.dataset import Dataset
 from sklearn.ensemble import RandomForestClassifier
+#랜덤포레스트 모델을 불러와서 학습 모델을 형성
 
 
 class Controller(object):
@@ -35,6 +36,7 @@ class Controller(object):
         #초기모델 생성
         this.train = service.new_model(train)
         this.test = service.new_model(test)
+        this.id = this.test['PassengerId']
         #norminal ordinal 로 정형화
         this = service.embarked_nominal(this)
         this = service.title_norminal(this)
