@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.svm import SVC
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
-
+from sklearn.ensemble import RandomForestClassifier
 
 class Service(object):
 
@@ -115,13 +115,14 @@ class Service(object):
             dataset['AgeGroup'] = dataset['AgeGroup'].map(age_title_mapping)
 
         return this
-#사이킷런으로 문제를 풀게 만드는것 # 하지만 이 방법을 사용 하지 않고 controller에서 사이킷런을 불러와서 사용할 예정
+#사이킷런으로 문제를 풀게 만드는것
+
     @staticmethod
     def create_k_fold() -> object:
         return KFold(n_splits=10, shuffle=True, random_state=0)
 
     def accuracy_by_svm(self, this):
-        score = cross_val_score(SVC(),
+        score = cross_val_score(RandomForestClassifier(),
                                 this.train,
                                 this.label,
                                 cv=KFold(n_splits=10,
